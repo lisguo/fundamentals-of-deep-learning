@@ -3,7 +3,7 @@
 This opt-in prototype records a course start when a configured notebook opens,
 then records progress as the learner successfully executes marked cells. All
 nine notebook markers are required for automatic completion. The panel displays
-a progress bar and percentage, with no notebook checklist or completion button. Only cell metadata is added to the
+a milestone checklist with checkmarks and a confirmed “Course complete” state, with no completion button. Only cell metadata is added to the
 notebooks. The normal Docker/Brev launch is unchanged.
 
 The prototype is a prebuilt JavaScript JupyterLab extension. It uses the
@@ -62,7 +62,7 @@ enabled. Its login token is separate from the Activity SDK token.
 
 1. The launcher alone does not start tracking.
 2. Open `tutorials/00_jupyterlab.ipynb` (or another configured notebook).
-3. Run its tagged print cell. The **Progress** panel shows a progress bar at 11%.
+3. Run its tagged print cell. The **Progress** panel checks off the first milestone (1 of 9 reached).
 4. Run the tagged cells in the other notebooks successfully. Repeats, execution
    errors, empty cells, unmarked cells, and saved outputs do not add progress.
 5. After all nine markers execute, the extension sends 100%, then completion,
@@ -151,3 +151,5 @@ Apache-2.0 `DLIActivity` browser facade supplied with the existing course
 integration. SHA-256:
 `e80ca6f2a4d14ef66c52de38e5d8c765a348a5860fec72e61a606ac254880632`.
 It is vendored solely for this pilot until a versioned SDK distribution exists.
+
+Milestone display labels can be customized with the optional `label` field on each marker. API progress records still use the existing percentage calculation.

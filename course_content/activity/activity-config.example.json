@@ -8,39 +8,48 @@
   "markers": [
     {
       "notebook": "tutorials/00_jupyterlab.ipynb",
-      "tag": "dli:complete:00"
+      "tag": "dli:complete:00",
+      "label": "Get started with JupyterLab"
     },
     {
       "notebook": "tutorials/01_mnist.ipynb",
-      "tag": "dli:complete:01"
+      "tag": "dli:complete:01",
+      "label": "Recognize handwritten digits"
     },
     {
       "notebook": "tutorials/02_asl.ipynb",
-      "tag": "dli:complete:02"
+      "tag": "dli:complete:02",
+      "label": "Classify sign language images"
     },
     {
       "notebook": "tutorials/03_asl_cnn.ipynb",
-      "tag": "dli:complete:03"
+      "tag": "dli:complete:03",
+      "label": "Build a convolutional network"
     },
     {
       "notebook": "tutorials/04a_asl_augmentation.ipynb",
-      "tag": "dli:complete:04a"
+      "tag": "dli:complete:04a",
+      "label": "Improve training with augmentation"
     },
     {
       "notebook": "tutorials/04b_asl_predictions.ipynb",
-      "tag": "dli:complete:04b"
+      "tag": "dli:complete:04b",
+      "label": "Make sign language predictions"
     },
     {
       "notebook": "tutorials/05a_doggy_door.ipynb",
-      "tag": "dli:complete:05a"
+      "tag": "dli:complete:05a",
+      "label": "Apply transfer learning"
     },
     {
       "notebook": "tutorials/05b_corgi_door.ipynb",
-      "tag": "dli:complete:05b"
+      "tag": "dli:complete:05b",
+      "label": "Fine-tune a model"
     },
     {
       "notebook": "tutorials/06_nlp.ipynb",
-      "tag": "dli:complete:06"
+      "tag": "dli:complete:06",
+      "label": "Answer questions with NLP"
     }
   ]
 }

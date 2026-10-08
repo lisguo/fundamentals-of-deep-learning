@@ -49,14 +49,39 @@ export default {
       return element;
     };
     add("h2", "Fundamentals of Deep Learning");
-    add("p", "Course progress");
-    const percentage = add("p", "0% complete");
-    percentage.style.cssText = "font-size:24px;font-weight:600;margin:12px 0 8px;";
-    const progress = add("progress", "0%");
-    progress.max = 100;
-    progress.value = 0;
-    progress.setAttribute("aria-label", "Course progress");
-    progress.style.cssText = "display:block;width:100%;height:16px;accent-color:#76b900;";
+    add("p", "Course milestones");
+    const summary = add("p", `0 of ${config.markers.length} milestones reached`);
+    summary.style.cssText = "font-size:16px;font-weight:600;margin:12px 0;";
+    const list = add("ul", "");
+    list.setAttribute("aria-label", "Course milestones");
+    list.style.cssText = "list-style:none;padding:0;margin:0;";
+    const milestones = config.markers.map((marker) => {
+      const row = document.createElement("li");
+      row.style.cssText = "display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--jp-border-color2);line-height:1.4;";
+      const icon = document.createElement("span");
+      icon.setAttribute("aria-hidden", "true");
+      icon.style.cssText = "display:inline-flex;align-items:center;justify-content:center;flex:0 0 22px;height:22px;border-radius:50%;font-size:14px;font-weight:700;";
+      const label = document.createElement("span");
+      const title = marker.label || marker.notebook.split("/").pop().replace(/\.ipynb$/, "").replace(/_/g, " ");
+      label.textContent = title;
+      row.append(icon, label);
+      list.append(row);
+      return { marker, row, icon, title };
+    });
+    const renderMilestones = (tracker) => {
+      summary.textContent = tracker?.status === "completed"
+        ? "✓ Course complete"
+        : `${tracker?.executedCount || 0} of ${config.markers.length} milestones reached`;
+      milestones.forEach(({ marker, row, icon, title }) => {
+        const done = tracker?.hasExecuted(marker.tag) || false;
+        row.dataset.completed = String(done);
+        row.setAttribute("aria-label", `${title}: ${done ? "reached" : "not yet reached"}`);
+        icon.textContent = done ? "✓" : "○";
+        icon.style.background = done ? "#76b900" : "var(--jp-layout-color2)";
+        icon.style.color = done ? "#111" : "var(--jp-ui-font-color2)";
+      });
+    };
+    renderMilestones();
     const status = add("p", "Open a course notebook to start tracking.");
     status.setAttribute("role", "status");
     const details = add("p", "");
@@ -87,9 +112,7 @@ export default {
       (options) => DLIActivity.initialize(options),
       (next, state) => {
         status.textContent = messages[next];
-        percentage.textContent = `${tracker.progressPercent}% complete`;
-        progress.value = tracker.progressPercent;
-        progress.textContent = `${tracker.progressPercent}%`;
+        renderMilestones(tracker);
         retry.hidden = next !== "error";
         details.textContent = state?.sessionId
           ? `Session: ${state.sessionId}`

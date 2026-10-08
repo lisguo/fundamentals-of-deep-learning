@@ -54,7 +54,7 @@ for (let i = 0; i < 9; i++) {
   await fs.writeFile(new URL(`${i}.ipynb`, fixtureRoot), JSON.stringify(book));
 }
 const browser = await chromium.launch({ channel: "chrome", headless: true });
-const context = await browser.newContext();
+const context = await browser.newContext({ viewport: { width: 1600, height: 1400 } });
 const page = await context.newPage();
 const writes = [],
   responses = [];
@@ -185,9 +185,8 @@ try {
     );
   };
   const count = async (n) => {
-    const percent = Math.floor((100 * n) / 9);
-    await expect(panel.getByRole("progressbar", { name: "Course progress" })).toHaveAttribute("value", String(percent), { timeout: 30000 });
-    await expect(panel.getByText(`${percent}% complete`, { exact: true })).toBeVisible();
+    await expect(panel.locator('li[data-completed="true"]')).toHaveCount(n, { timeout: 30000 });
+    await expect(panel.getByRole("progressbar")).toHaveCount(0);
   };
   // Final marker first: proves it cannot complete by itself.
   await open(8);
@@ -227,6 +226,8 @@ try {
       failProgress = false;
       await panel.getByRole("button", { name: "Retry", exact: true }).click();
     }
+    if (i === 2 && process.env.PARTIAL_SCREENSHOT_PATH)
+      await panel.screenshot({ path: process.env.PARTIAL_SCREENSHOT_PATH });
     // Await delivery so API acceptance ordering is independently observable.
     if (i < 7)
       await panel
@@ -258,8 +259,9 @@ try {
       ([k, v]) => !/session_token|test-token-not-a-real-credential/.test(k + v),
     ),
   );
+  await expect(panel.getByText("✓ Course complete", { exact: true })).toBeVisible();
   if (process.env.SCREENSHOT_PATH)
-    await page.screenshot({
+    await panel.screenshot({
       path: process.env.SCREENSHOT_PATH,
       fullPage: true,
     });
