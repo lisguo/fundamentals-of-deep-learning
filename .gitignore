@@ -14,3 +14,7 @@
 .DS_Store
 *.log
 .env.local
+
+# Local activity pilot configuration and environment
+activity-config.local.json
+.venv-activity/

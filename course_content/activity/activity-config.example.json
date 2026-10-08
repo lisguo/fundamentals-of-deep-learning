@@ -1,0 +1,19 @@
+{
+  "baseUrl": "<ACTIVITY_API_BASE_URL>",
+  "artifact": {
+    "artifact_id": "<ARTIFACT_ID>",
+    "artifact_version": "<ARTIFACT_VERSION>",
+    "artifact_digest": "<ARTIFACT_DIGEST>"
+  },
+  "notebooks": [
+    "tutorials/00_jupyterlab.ipynb",
+    "tutorials/01_mnist.ipynb",
+    "tutorials/02_asl.ipynb",
+    "tutorials/03_asl_cnn.ipynb",
+    "tutorials/04a_asl_augmentation.ipynb",
+    "tutorials/04b_asl_predictions.ipynb",
+    "tutorials/05a_doggy_door.ipynb",
+    "tutorials/05b_corgi_door.ipynb",
+    "tutorials/06_nlp.ipynb"
+  ]
+}
