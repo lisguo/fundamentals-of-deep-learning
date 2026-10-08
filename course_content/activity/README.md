@@ -62,7 +62,7 @@ enabled. Its login token is separate from the Activity SDK token.
 
 1. The launcher alone does not start tracking.
 2. Open `tutorials/00_jupyterlab.ipynb` (or another configured notebook).
-3. Run its tagged print cell. The **Course activity** panel shows 1 of 9 and 11%.
+3. Run its tagged print cell. The **Progress** panel shows 1 of 9 and 11%.
 4. Run the tagged cells in the other notebooks successfully. Repeats, execution
    errors, empty cells, unmarked cells, and saved outputs do not add progress.
 5. After all nine markers execute, the extension sends 100%, then completion,

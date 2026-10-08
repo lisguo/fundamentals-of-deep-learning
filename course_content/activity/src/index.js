@@ -37,8 +37,8 @@ export default {
 
     const panel = new Widget();
     panel.id = "fdl-activity-panel";
-    panel.title.label = "Course activity";
-    panel.title.caption = "FDL activity pilot";
+    panel.title.label = "Progress";
+    panel.title.caption = "Course progress";
     panel.title.closable = false;
     panel.node.style.cssText =
       "padding:16px;min-width:240px;overflow:auto;color:var(--jp-ui-font-color1);background:var(--jp-layout-color1);";
@@ -49,7 +49,7 @@ export default {
       return element;
     };
     add("h2", "Fundamentals of Deep Learning");
-    add("p", "Local activity pilot");
+    add("p", "Course progress");
     const status = add("p", "Open a course notebook to start tracking.");
     status.setAttribute("role", "status");
     const details = add("p", "");
