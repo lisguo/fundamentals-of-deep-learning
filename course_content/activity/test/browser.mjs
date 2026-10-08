@@ -19,7 +19,7 @@ const testConfig = {
   ...config,
   markers: config.markers.map((m, i) => ({
     ...m,
-    notebook: `activity/browser-fixtures/${id}/${i}.ipynb`,
+    notebook: `activity/browser-fixtures/${id}/${m.notebook.split("/").pop()}`,
   })),
 };
 const cell = (source, tags = []) => ({
@@ -51,7 +51,7 @@ for (let i = 0; i < 9; i++) {
     },
     cells: [cell(setup), cell(source, [testConfig.markers[i].tag])],
   };
-  await fs.writeFile(new URL(`${i}.ipynb`, fixtureRoot), JSON.stringify(book));
+  await fs.writeFile(new URL(testConfig.markers[i].notebook.split("/").pop(), fixtureRoot), JSON.stringify(book));
 }
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const context = await browser.newContext({ viewport: { width: 1600, height: 2000 } });
