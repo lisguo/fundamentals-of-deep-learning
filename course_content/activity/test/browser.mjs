@@ -188,6 +188,11 @@ try {
     await expect(panel.locator('li[data-completed="true"]')).toHaveCount(n, { timeout: 30000 });
     await expect(panel.getByRole("progressbar")).toHaveCount(0);
   };
+  const capture = async (path) => {
+    const bounds = await panel.boundingBox();
+    const status = await panel.getByRole("status").boundingBox();
+    await page.screenshot({ path, clip: { x: bounds.x, y: bounds.y, width: bounds.width, height: status.y + status.height + 16 - bounds.y } });
+  };
   // Final marker first: proves it cannot complete by itself.
   await open(8);
   await run(1, ""); // Empty tagged cells do not execute and must not count.
@@ -227,7 +232,7 @@ try {
       await panel.getByRole("button", { name: "Retry", exact: true }).click();
     }
     if (i === 2 && process.env.PARTIAL_SCREENSHOT_PATH)
-      await panel.screenshot({ path: process.env.PARTIAL_SCREENSHOT_PATH });
+      await capture(process.env.PARTIAL_SCREENSHOT_PATH);
     // Await delivery so API acceptance ordering is independently observable.
     if (i < 7)
       await panel
@@ -261,10 +266,7 @@ try {
   );
   await expect(panel.getByText("✓ Course complete", { exact: true })).toBeVisible();
   if (process.env.SCREENSHOT_PATH)
-    await panel.screenshot({
-      path: process.env.SCREENSHOT_PATH,
-      fullPage: true,
-    });
+    await capture(process.env.SCREENSHOT_PATH);
   console.log(
     JSON.stringify(
       {
