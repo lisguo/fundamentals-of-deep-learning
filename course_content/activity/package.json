@@ -2,7 +2,7 @@
   "name": "@dli/fdl-activity-pilot",
   "version": "0.1.0",
   "private": true,
-  "description": "Opt-in JupyterLab start and self-reported completion pilot",
+  "description": "JupyterLab course milestones with DLI Activity tracking",
   "license": "Apache-2.0",
   "type": "module",
   "main": "src/index.js",

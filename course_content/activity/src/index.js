@@ -96,20 +96,12 @@ export default {
     renderMilestones();
     const status = add("p", "Open a course notebook to start tracking.");
     status.setAttribute("role", "status");
-    const details = add("p", "");
     const retry = add("button", "Retry");
     retry.type = "button";
     retry.hidden = true;
     retry.style.cssText = "padding:8px 12px;margin-left:8px;cursor:pointer;";
-    add(
-      "p",
-      "Progress counts successful executions of marked cells. All notebook markers are required for completion.",
-    );
-    add("p", "This records execution, not assessment scores or certification.");
-    add(
-      "p",
-      "Tracking stays in this browser tab. Reloading or opening another tab starts a new anonymous session.",
-    );
+    add("p", "All milestones are required. Checkmarks record cell execution, not answer correctness.");
+    add("p", "Progress resets when you reload or open a new browser tab.");
     const messages = {
       starting: "Connecting to the Activity API…",
       started: "Tracking marked cell executions.",
@@ -122,13 +114,10 @@ export default {
     const tracker = createCourseTracker(
       config,
       (options) => DLIActivity.initialize(options),
-      (next, state) => {
+      (next) => {
         status.textContent = messages[next];
         renderMilestones(tracker);
         retry.hidden = next !== "error";
-        details.textContent = state?.sessionId
-          ? `Session: ${state.sessionId}`
-          : "";
       },
     );
     const run = async (operation) => {

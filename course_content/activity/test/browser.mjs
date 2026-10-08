@@ -5,7 +5,6 @@ import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 
 const login = (await fs.readFile(process.env.AUTH_URL_FILE, "utf8")).trim();
-const live = process.env.LIVE_ACTIVITY === "1";
 const config = JSON.parse(
   await fs.readFile(
     new URL("../../activity-config.local.json", import.meta.url),
@@ -17,7 +16,7 @@ const fixtureRoot = new URL(`../browser-fixtures/${id}/`, import.meta.url);
 await fs.mkdir(fixtureRoot, { recursive: true });
 const testConfig = {
   ...config,
-  markers: config.markers.map((m, i) => ({
+  markers: config.markers.map((m) => ({
     ...m,
     notebook: `activity/browser-fixtures/${id}/${m.notebook.split("/").pop()}`,
   })),
@@ -56,8 +55,7 @@ for (let i = 0; i < 9; i++) {
 const browser = await chromium.launch({ channel: "chrome", headless: true });
 const context = await browser.newContext({ viewport: { width: 1600, height: 2000 } });
 const page = await context.newPage();
-const writes = [],
-  responses = [];
+const writes = [];
 let progress = 0,
   completedAt = null,
   sessions = 0,
@@ -81,69 +79,46 @@ await page.route(
     await route.fulfill({ response, json: body });
   },
 );
-if (!live) {
-  await page.route(`${config.baseUrl}/**`, async (route) => {
-    const request = route.request(),
-      path = new URL(request.url()).pathname,
-      body = request.postDataJSON();
-    let result,
-      status = 200;
-    if (path === "/v1/activity-sessions") {
-      sessions++;
-      result = {
-        session_id: sessionId,
-        session_token: "test-token-not-a-real-credential",
-        expires_at: new Date(Date.now() + 86400000).toISOString(),
-      };
-    } else if (path.endsWith("/state")) result = state();
-    else if (path.endsWith("/updates")) {
-      writes.push({
-        type: body.type,
-        progress: body.payload.progress_percent,
-        key: request.headers()["idempotency-key"],
-      });
-      if (body.type === "progress" && failProgress) {
-        status = 503;
-        result = { detail: "test outage" };
-      } else {
-        if (body.type === "progress") progress = body.payload.progress_percent;
-        if (body.type === "completed") completedAt = new Date().toISOString();
-        result = {
-          update_id: crypto.randomUUID(),
-          received_at: new Date().toISOString(),
-          state: state(),
-        };
-        status = 201;
-      }
-    } else throw Error("Unexpected Activity request");
-    await route.fulfill({
-      status,
-      contentType: "application/json",
-      body: JSON.stringify(result),
+await page.route(`${config.baseUrl}/**`, async (route) => {
+  const request = route.request(),
+    path = new URL(request.url()).pathname,
+    body = request.postDataJSON();
+  let result,
+    status = 200;
+  if (path === "/v1/activity-sessions") {
+    sessions++;
+    result = {
+      session_id: sessionId,
+      session_token: "test-token-not-a-real-credential",
+      expires_at: new Date(Date.now() + 86400000).toISOString(),
+    };
+  } else if (path.endsWith("/state")) result = state();
+  else if (path.endsWith("/updates")) {
+    writes.push({
+      type: body.type,
+      progress: body.payload.progress_percent,
+      key: request.headers()["idempotency-key"],
     });
-  });
-} else {
-  page.on("response", async (response) => {
-    if (!response.url().startsWith(config.baseUrl)) return;
-    const request = response.request(),
-      entry = {
-        method: request.method(),
-        path: new URL(response.url()).pathname,
-        status: response.status(),
+    if (body.type === "progress" && failProgress) {
+      status = 503;
+      result = { detail: "test outage" };
+    } else {
+      if (body.type === "progress") progress = body.payload.progress_percent;
+      if (body.type === "completed") completedAt = new Date().toISOString();
+      result = {
+        update_id: crypto.randomUUID(),
+        received_at: new Date().toISOString(),
+        state: state(),
       };
-    if (request.method() === "POST" && entry.path.endsWith("/updates"))
-      entry.body = request.postDataJSON();
-    try {
-      const data = await response.json();
-      entry.result = Object.fromEntries(
-        ["session_id", "update_id", "progress_percent", "completed_at"]
-          .filter((k) => k in data)
-          .map((k) => [k, data[k]]),
-      );
-    } catch (_) {}
-    responses.push(entry);
+      status = 201;
+    }
+  } else throw Error("Unexpected Activity request");
+  await route.fulfill({
+    status,
+    contentType: "application/json",
+    body: JSON.stringify(result),
   });
-}
+});
 try {
   const url = new URL(login);
   url.pathname = `/lab/workspaces/marker-test-${id}`;
@@ -193,11 +168,6 @@ try {
     await expect(panel.locator('li[data-completed="true"]')).toHaveCount(n, { timeout: 30000 });
     await expect(panel.getByRole("progressbar")).toHaveCount(0);
   };
-  const capture = async (path) => {
-    const bounds = await panel.boundingBox();
-    const status = await panel.getByRole("status").boundingBox();
-    await page.screenshot({ path, clip: { x: bounds.x, y: bounds.y, width: bounds.width, height: status.y + status.height + 16 - bounds.y } });
-  };
   // Final marker first: proves it cannot complete by itself.
   await open(8);
   await run(1, ""); // Empty tagged cells do not execute and must not count.
@@ -228,16 +198,14 @@ try {
   await count(1);
   for (let i = 0; i < 8; i++) {
     await open(i);
-    if (!live && i === 0) failProgress = true;
+    if (i === 0) failProgress = true;
     await run(1);
     await count(i + 2);
-    if (!live && i === 0) {
+    if (i === 0) {
       await panel.getByRole("button", { name: "Retry", exact: true }).waitFor();
       failProgress = false;
       await panel.getByRole("button", { name: "Retry", exact: true }).click();
     }
-    if (i === 2 && process.env.PARTIAL_SCREENSHOT_PATH)
-      await capture(process.env.PARTIAL_SCREENSHOT_PATH);
     // Await delivery so API acceptance ordering is independently observable.
     if (i < 7)
       await panel
@@ -254,12 +222,10 @@ try {
       }),
     ).toBeVisible({ timeout: 1500 });
   }).toPass({ timeout: 30000 });
-  if (!live) {
-    assert.equal(sessions, 1);
-    assert.equal(progress, 100);
-    assert.ok(completedAt);
-    assert.equal(writes.filter((x) => x.type === "completed").length, 1);
-  }
+  assert.equal(sessions, 1);
+  assert.equal(progress, 100);
+  assert.ok(completedAt);
+  assert.equal(writes.filter((x) => x.type === "completed").length, 1);
   const storage = await page.evaluate(() => [
     ...Object.entries(localStorage),
     ...Object.entries(sessionStorage),
@@ -270,22 +236,7 @@ try {
     ),
   );
   await expect(panel.getByText("✓ Course complete", { exact: true })).toBeVisible();
-  if (process.env.SCREENSHOT_PATH)
-    await capture(process.env.SCREENSHOT_PATH);
-  console.log(
-    JSON.stringify(
-      {
-        mode: live
-          ? "live-api-with-fixture-executions"
-          : "intercepted-api-with-fixture-executions",
-        result: "PASS",
-        writes: live ? undefined : writes,
-        responses: live ? responses : undefined,
-      },
-      null,
-      2,
-    ),
-  );
+  console.log("PASS: notebook milestones, retries, and confirmed completion");
 } catch (error) {
   console.error("Browser test failed:", error.message.split("\n")[0]);
   console.error(
@@ -295,12 +246,6 @@ try {
       .textContent({ timeout: 2000 })
       .catch(() => "not loaded"),
   );
-  if (live) console.error(JSON.stringify(responses, null, 2));
-  if (process.env.SCREENSHOT_PATH)
-    await page.screenshot({
-      path: process.env.SCREENSHOT_PATH,
-      fullPage: true,
-    });
   process.exitCode = 1;
 } finally {
   // Shut down only kernels created for these temporary fixtures.
