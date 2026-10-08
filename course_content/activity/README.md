@@ -83,7 +83,7 @@ code-cell type, and a real execution count. It does not scan historical outputs.
 | `01_mnist` | `prediction.argmax(dim=1, keepdim=True)` |
 | `02_asl` | Final training/validation loop |
 | `03_asl_cnn` | Final training/validation loop |
-| `04a_asl_augmentation` | `torch.save(base_model, 'model.pth')` |
+| `04a_asl_augmentation` | Augmented training/validation loop |
 | `04b_asl_predictions` | `predict_letter("images/A.jpg")` |
 | `05a_doggy_door` | Final `doggy_door` call (sleepy cat image) |
 | `05b_corgi_door` | Final `corgi_doggy_door` call (Penny image) |
@@ -152,4 +152,6 @@ integration. SHA-256:
 `e80ca6f2a4d14ef66c52de38e5d8c765a348a5860fec72e61a606ac254880632`.
 It is vendored solely for this pilot until a versioned SDK distribution exists.
 
-Milestone display labels can be customized with the optional `label` field on each marker. API progress records still use the existing percentage calculation.
+Milestone titles and instructions can be customized with optional `label` and `description` fields on each marker. The panel also shows the notebook filename. API progress records still use the existing percentage calculation.
+
+These milestones select practical exercises aligned with the notebook objectives. They record successful execution, not correctness: the extension does not inspect predictions, enforce accuracy thresholds, verify that training ran for a positive number of epochs, or distinguish learner work from the provided solutions. Notebook 00 is an orientation task. Pass/fail knowledge verification would require additional result checks. The digit label comparison is a learner instruction, not an automatically checked condition.

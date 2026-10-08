@@ -54,7 +54,7 @@ for (let i = 0; i < 9; i++) {
   await fs.writeFile(new URL(`${i}.ipynb`, fixtureRoot), JSON.stringify(book));
 }
 const browser = await chromium.launch({ channel: "chrome", headless: true });
-const context = await browser.newContext({ viewport: { width: 1600, height: 1400 } });
+const context = await browser.newContext({ viewport: { width: 1600, height: 2000 } });
 const page = await context.newPage();
 const writes = [],
   responses = [];
@@ -152,6 +152,11 @@ try {
   const panel = page.locator("#fdl-activity-panel");
   await panel.waitFor({ state: "attached", timeout: 60000 });
   assert.equal(sessions, 0);
+  for (const marker of testConfig.markers) {
+    await expect(panel.getByText(marker.label, { exact: true })).toHaveCount(1);
+    if (marker.description)
+      await expect(panel.getByText(marker.description, { exact: true })).toHaveCount(1);
+  }
   assert.equal(
     await panel.getByRole("button", { name: "Mark course complete" }).count(),
     0,

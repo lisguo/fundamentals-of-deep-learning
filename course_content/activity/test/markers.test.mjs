@@ -24,6 +24,10 @@ test("all nine configured tags exist on one code cell each; final tag is the req
     assert.equal(tagged.length, 1, marker.notebook);
     assert.equal(tagged[0].cell_type, "code");
     assert.ok(!tagged[0].source.join("").includes("do_shutdown"));
+    if (marker.tag === "dli:complete:04a") {
+      assert.match(tagged[0].source.join(""), /train\(\)/);
+      assert.match(tagged[0].source.join(""), /validate\(\)/);
+    }
     if (marker.tag === "dli:complete:06")
       assert.equal(
         tagged[0].source.join(""),

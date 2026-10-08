@@ -41,7 +41,7 @@ export default {
     panel.title.caption = "Course progress";
     panel.title.closable = false;
     panel.node.style.cssText =
-      "padding:16px;min-width:240px;overflow:auto;color:var(--jp-ui-font-color1);background:var(--jp-layout-color1);";
+      "padding:16px;min-width:300px;overflow:auto;color:var(--jp-ui-font-color1);background:var(--jp-layout-color1);";
     const add = (tag, text) => {
       const element = document.createElement(tag);
       element.textContent = text;
@@ -57,14 +57,26 @@ export default {
     list.style.cssText = "list-style:none;padding:0;margin:0;";
     const milestones = config.markers.map((marker) => {
       const row = document.createElement("li");
-      row.style.cssText = "display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--jp-border-color2);line-height:1.4;";
+      row.style.cssText = "display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid var(--jp-border-color2);line-height:1.4;";
       const icon = document.createElement("span");
       icon.setAttribute("aria-hidden", "true");
       icon.style.cssText = "display:inline-flex;align-items:center;justify-content:center;flex:0 0 22px;height:22px;border-radius:50%;font-size:14px;font-weight:700;";
       const label = document.createElement("span");
       const title = marker.label || marker.notebook.split("/").pop().replace(/\.ipynb$/, "").replace(/_/g, " ");
       label.textContent = title;
-      row.append(icon, label);
+      label.style.fontWeight = "600";
+      const text = document.createElement("div");
+      const notebook = document.createElement("div");
+      notebook.textContent = marker.notebook.split("/").pop();
+      notebook.style.cssText = "font-size:11px;color:var(--jp-ui-font-color2);margin:2px 0 4px;overflow-wrap:anywhere;";
+      text.append(label, notebook);
+      if (marker.description) {
+        const description = document.createElement("div");
+        description.textContent = marker.description;
+        description.style.cssText = "font-size:12px;color:var(--jp-ui-font-color2);";
+        text.append(description);
+      }
+      row.append(icon, text);
       list.append(row);
       return { marker, row, icon, title };
     });

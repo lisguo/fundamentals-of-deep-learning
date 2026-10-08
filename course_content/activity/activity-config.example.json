@@ -9,47 +9,56 @@
     {
       "notebook": "tutorials/00_jupyterlab.ipynb",
       "tag": "dli:complete:00",
-      "label": "Get started with JupyterLab"
+      "label": "Run your first notebook cell",
+      "description": "Run the introductory print cell with Shift+Enter."
     },
     {
       "notebook": "tutorials/01_mnist.ipynb",
       "tag": "dli:complete:01",
-      "label": "Recognize handwritten digits"
+      "label": "Predict a handwritten digit",
+      "description": "Run the trained model’s argmax prediction; compare it with the label below."
     },
     {
       "notebook": "tutorials/02_asl.ipynb",
       "tag": "dli:complete:02",
-      "label": "Classify sign language images"
+      "label": "Train an ASL classifier",
+      "description": "Complete the model and accuracy exercises, then run the training-and-validation loop."
     },
     {
       "notebook": "tutorials/03_asl_cnn.ipynb",
       "tag": "dli:complete:03",
-      "label": "Build a convolutional network"
+      "label": "Train and validate a CNN",
+      "description": "Complete the train/eval exercise, then run the CNN training-and-validation loop."
     },
     {
       "notebook": "tutorials/04a_asl_augmentation.ipynb",
       "tag": "dli:complete:04a",
-      "label": "Improve training with augmentation"
+      "label": "Train with augmented images",
+      "description": "Run the training-and-validation loop that applies random image transforms."
     },
     {
       "notebook": "tutorials/04b_asl_predictions.ipynb",
       "tag": "dli:complete:04b",
-      "label": "Make sign language predictions"
+      "label": "Predict a sign-language letter",
+      "description": "Complete predict_letter, then run it on images/A.jpg."
     },
     {
       "notebook": "tutorials/05a_doggy_door.ipynb",
       "tag": "dli:complete:05a",
-      "label": "Apply transfer learning"
+      "label": "Apply the doggy-door rule",
+      "description": "Complete doggy_door, then run the cat example to exercise the keep-inside decision."
     },
     {
       "notebook": "tutorials/05b_corgi_door.ipynb",
       "tag": "dli:complete:05b",
-      "label": "Fine-tune a model"
+      "label": "Recognize Penny",
+      "description": "Complete corgi_doggy_door, then run the final Penny image example."
     },
     {
       "notebook": "tutorials/06_nlp.ipynb",
       "tag": "dli:complete:06",
-      "label": "Answer questions with NLP"
+      "label": "Extract an answer from text",
+      "description": "Run the final tokenizer.decode(answer_sequence) cell to display the model’s answer."
     }
   ]
 }
