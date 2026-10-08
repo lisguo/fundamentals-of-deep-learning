@@ -2,3 +2,5 @@ node_modules/
 labextension/
 playwright-report/
 test-results/
+
+browser-fixtures/

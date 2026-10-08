@@ -5,15 +5,42 @@
     "artifact_version": "<ARTIFACT_VERSION>",
     "artifact_digest": "<ARTIFACT_DIGEST>"
   },
-  "notebooks": [
-    "tutorials/00_jupyterlab.ipynb",
-    "tutorials/01_mnist.ipynb",
-    "tutorials/02_asl.ipynb",
-    "tutorials/03_asl_cnn.ipynb",
-    "tutorials/04a_asl_augmentation.ipynb",
-    "tutorials/04b_asl_predictions.ipynb",
-    "tutorials/05a_doggy_door.ipynb",
-    "tutorials/05b_corgi_door.ipynb",
-    "tutorials/06_nlp.ipynb"
+  "markers": [
+    {
+      "notebook": "tutorials/00_jupyterlab.ipynb",
+      "tag": "dli:complete:00"
+    },
+    {
+      "notebook": "tutorials/01_mnist.ipynb",
+      "tag": "dli:complete:01"
+    },
+    {
+      "notebook": "tutorials/02_asl.ipynb",
+      "tag": "dli:complete:02"
+    },
+    {
+      "notebook": "tutorials/03_asl_cnn.ipynb",
+      "tag": "dli:complete:03"
+    },
+    {
+      "notebook": "tutorials/04a_asl_augmentation.ipynb",
+      "tag": "dli:complete:04a"
+    },
+    {
+      "notebook": "tutorials/04b_asl_predictions.ipynb",
+      "tag": "dli:complete:04b"
+    },
+    {
+      "notebook": "tutorials/05a_doggy_door.ipynb",
+      "tag": "dli:complete:05a"
+    },
+    {
+      "notebook": "tutorials/05b_corgi_door.ipynb",
+      "tag": "dli:complete:05b"
+    },
+    {
+      "notebook": "tutorials/06_nlp.ipynb",
+      "tag": "dli:complete:06"
+    }
   ]
 }
