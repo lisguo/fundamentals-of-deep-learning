@@ -184,13 +184,11 @@ try {
       { index, source },
     );
   };
-  const count = async (n) =>
-    expect(
-      panel.getByText(
-        `${n} of 9 notebook markers executed (${Math.floor((100 * n) / 9)}%).`,
-        { exact: true },
-      ),
-    ).toBeVisible({ timeout: 30000 });
+  const count = async (n) => {
+    const percent = Math.floor((100 * n) / 9);
+    await expect(panel.getByRole("progressbar", { name: "Course progress" })).toHaveAttribute("value", String(percent), { timeout: 30000 });
+    await expect(panel.getByText(`${percent}% complete`, { exact: true })).toBeVisible();
+  };
   // Final marker first: proves it cannot complete by itself.
   await open(8);
   await run(1, ""); // Empty tagged cells do not execute and must not count.

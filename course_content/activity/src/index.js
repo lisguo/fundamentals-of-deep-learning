@@ -50,20 +50,16 @@ export default {
     };
     add("h2", "Fundamentals of Deep Learning");
     add("p", "Course progress");
+    const percentage = add("p", "0% complete");
+    percentage.style.cssText = "font-size:24px;font-weight:600;margin:12px 0 8px;";
+    const progress = add("progress", "0%");
+    progress.max = 100;
+    progress.value = 0;
+    progress.setAttribute("aria-label", "Course progress");
+    progress.style.cssText = "display:block;width:100%;height:16px;accent-color:#76b900;";
     const status = add("p", "Open a course notebook to start tracking.");
     status.setAttribute("role", "status");
     const details = add("p", "");
-    const progress = add(
-      "p",
-      `0 of ${config.markers.length} notebook markers executed (0%).`,
-    );
-    const checklist = add("ul", "");
-    const items = config.markers.map((marker) => {
-      const item = document.createElement("li");
-      item.textContent = marker.notebook.split("/").pop();
-      checklist.append(item);
-      return item;
-    });
     const retry = add("button", "Retry");
     retry.type = "button";
     retry.hidden = true;
@@ -91,11 +87,9 @@ export default {
       (options) => DLIActivity.initialize(options),
       (next, state) => {
         status.textContent = messages[next];
-        progress.textContent = `${tracker.executedCount} of ${config.markers.length} notebook markers executed (${tracker.progressPercent}%).`;
-        items.forEach((item, i) => {
-          const marker = config.markers[i];
-          item.textContent = `${tracker.hasExecuted(marker.tag) ? "✓" : "○"} ${marker.notebook.split("/").pop()}`;
-        });
+        percentage.textContent = `${tracker.progressPercent}% complete`;
+        progress.value = tracker.progressPercent;
+        progress.textContent = `${tracker.progressPercent}%`;
         retry.hidden = next !== "error";
         details.textContent = state?.sessionId
           ? `Session: ${state.sessionId}`
